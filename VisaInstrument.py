@@ -1,5 +1,6 @@
 import pyvisa as visa
 from datetime import datetime
+import signal
 
 
 class VISAInstrument(object):
@@ -33,6 +34,7 @@ class VISAInstrument(object):
         try:
             self.resource = visa.ResourceManager().open_resource(resourceID)
             self.resource.timeout = timeout
+            signal.signal(signal.SIGINT, lambda signal, frame: self.resource.close())
         except BaseException as e:
             print(datetime.now(), 'Error in open device at: {}'.format(resourceID), e)
 
@@ -43,6 +45,10 @@ class VISAInstrument(object):
         # Reset
         if reset:
             self.reset()
+
+    def __del__(self):
+        if self.resource:
+            self.resource.close()
 
     def reset(self):
         self.resource.write("*RST")

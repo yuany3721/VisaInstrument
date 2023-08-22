@@ -5,7 +5,7 @@ import time
 
 class VisaExample(VisaInstrument):
     '''
-    This is an using example for VisaInstrument
+    This is an using example on ITC4001 for VisaInstrument
     '''
 
     def print_info(self):
